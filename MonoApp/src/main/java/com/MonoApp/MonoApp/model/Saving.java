@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "savings")
 public class Saving {
 
     @Id

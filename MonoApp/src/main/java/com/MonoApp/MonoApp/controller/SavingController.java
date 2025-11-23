@@ -1,5 +1,7 @@
 package com.MonoApp.MonoApp.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.MonoApp.MonoApp.model.Saving;
@@ -9,32 +11,33 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/savings")
+@RequestMapping("/api/savings")
 public class SavingController {
 
-    private final SavingService savingService;
+    @Autowired
+    private SavingService savingService;
 
-    public SavingController(SavingService savingService) {
-        this.savingService = savingService;
+    @PostMapping("/{userId}/add")
+    public ResponseEntity<Saving> addSaving(
+            @PathVariable UUID userId,
+            @RequestBody Saving savingData
+    ) {
+        return ResponseEntity.ok(
+                savingService.registerSaving(
+                        userId,
+                        savingData.getSavedMoney(),
+                        savingData.getDaysWithoutSmoking()
+                )
+        );
     }
 
-    @GetMapping
-    public List<Saving> getAllSavings() {
-        return savingService.getAllSavings();
+    @GetMapping("/{userId}/total")
+    public ResponseEntity<Double> getTotal(@PathVariable UUID userId) {
+        return ResponseEntity.ok(savingService.getTotalSavings(userId));
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Saving> getSavingsByUser(@PathVariable UUID userId) {
-        return savingService.getSavingsByUserId(userId);
-    }
-
-    @PostMapping
-    public Saving createSaving(@RequestBody Saving saving) {
-        return savingService.createSaving(saving);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteSaving(@PathVariable UUID id) {
-        savingService.deleteSaving(id);
+    @GetMapping("/{userId}/history")
+    public ResponseEntity<List<Saving>> getHistory(@PathVariable UUID userId) {
+        return ResponseEntity.ok(savingService.getHistory(userId));
     }
 }

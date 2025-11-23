@@ -1,9 +1,16 @@
 package com.MonoApp.MonoApp.model;
 
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.MonoApp.MonoApp.repository.UserRepository;
 
 @Entity
 @Table(name = "users")
@@ -29,7 +36,9 @@ public class User {
     private Boolean mascotStatus;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Saving> savings;
+    private List<Saving> savings = new ArrayList<>();
+  
+
     // Constructors, getters, and setters
     public User() {
     }

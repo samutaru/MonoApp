@@ -2,6 +2,7 @@ package com.MonoApp.MonoApp.controller;
 
 
 import com.MonoApp.MonoApp.dto.*;
+import com.MonoApp.MonoApp.model.User;
 import com.MonoApp.MonoApp.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,10 @@ private final AuthService authService;
 public AuthController(AuthService authService){ this.authService = authService; }
 
 
-@PostMapping("/register")
-public ResponseEntity<AuthResponse> register(@RequestBody UserRegisterDto dto) {
-return ResponseEntity.ok(authService.register(dto));
-}
+ @PostMapping("/register")
+    public AuthRegisterResponse register(@RequestBody UserRegisterDto userDto) {
+        return authService.register(userDto);
+    }
 
 
 @PostMapping("/login")

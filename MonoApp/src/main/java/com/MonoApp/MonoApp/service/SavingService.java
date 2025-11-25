@@ -20,17 +20,18 @@ public class SavingService {
     @Autowired
     private UserRepository userRepo;
 
-    public Saving registerSaving(UUID userId, Double amount, Integer days) {
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public Saving registerSaving(UUID userId, Double savedMoney, Integer daysWithoutSmoking) {
+    User user = userRepo.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Saving s = new Saving();
-        s.setUser(user);
-        s.setSavedMoney(amount);
-        s.setDaysWithoutSmoking(days);
+    Saving saving = new Saving();
+    saving.setUser(user);
+    saving.setSavedMoney(savedMoney);
+    saving.setDaysWithoutSmoking(daysWithoutSmoking);
 
-        return savingRepo.save(s);
-    }
+    return savingRepo.save(saving);
+}
+
 
     public Double getTotalSavings(UUID userId) {
         return savingRepo.getTotalSavings(userId);

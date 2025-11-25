@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
-import java.util.UUID;
+
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 

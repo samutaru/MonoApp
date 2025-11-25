@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -36,6 +37,10 @@ public AuthResponse register(UserRegisterDto dto) {
     user.setMail(dto.getMail());
     user.setName(dto.getName());
     user.setPassword(encoder.encode(dto.getPassword()));
+    user.setRegisterDate(java.sql.Date.valueOf(LocalDate.now()));
+    user.setCigPrice(dto.getCigPrice());
+    user.setCigInitial(dto.getCigInitial());
+
 
     // 2️⃣ Guardamos el usuario y obtenemos la entidad persistida
     User savedUser = userRepository.save(user);

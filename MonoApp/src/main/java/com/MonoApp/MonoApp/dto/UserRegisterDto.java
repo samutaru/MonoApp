@@ -7,6 +7,7 @@ private String mail;
 private String password;
 private Float cigPrice;
 private Integer cigInitial;
+private java.sql.Date registerDate;
 // getters/setters
 public String getName() {
     return name;
@@ -38,5 +39,10 @@ public Integer getCigInitial() {
 public void setCigInitial(Integer cigInitial) {
     this.cigInitial = cigInitial;
 }
+public java.sql.Date getRegisterDate() {
+    return registerDate;
+}
+public void setRegisterDate(java.sql.Date registerDate) {
+    this.registerDate = registerDate;}
 
 }

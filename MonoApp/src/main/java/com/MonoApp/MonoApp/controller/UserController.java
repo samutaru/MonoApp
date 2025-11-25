@@ -5,7 +5,8 @@ import com.MonoApp.MonoApp.service.UserService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+
 
 import java.util.UUID;
 
@@ -25,17 +26,16 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(id));
     }
 
-    // ⬅ Muestra el usuario autenticado (JWT)
-    @GetMapping("/me")
-    public ResponseEntity<User> getMe() {
+   @GetMapping("/me")
+public ResponseEntity<User> getMe(Authentication authentication) {
+    String userIdStr = authentication.getName(); 
+    UUID userId = UUID.fromString(userIdStr);
 
-        String userId = (String) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+    User user = userService.getUser(userId);
 
-        return ResponseEntity.ok(
-                userService.getUser(UUID.fromString(userId))
-        );
-    }
+    return ResponseEntity.ok(user);
+}
+
+
+
 }

@@ -1,71 +1,60 @@
-    package com.MonoApp.MonoApp.service;
+package com.MonoApp.MonoApp.service;
 
+import com.MonoApp.MonoApp.dto.UserLoginDto;
+import com.MonoApp.MonoApp.dto.UserRegisterDto;
+import com.MonoApp.MonoApp.dto.AuthResponse;
+import com.MonoApp.MonoApp.model.User;
+import com.MonoApp.MonoApp.repository.UserRepository;
+import com.MonoApp.MonoApp.security.JwtUtil;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
-    import com.MonoApp.MonoApp.dto.*;
-    import com.MonoApp.MonoApp.model.User;
-    import com.MonoApp.MonoApp.repository.UserRepository;
-    import com.MonoApp.MonoApp.security.JwtUtil;
-    import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-    import org.springframework.stereotype.Service;
-    import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
+import java.util.UUID;
 
+@Service
+public class AuthService {
 
-    @Service
-    public class AuthService {
-    private final UserRepository userRepo;
+    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
+    public AuthService(UserRepository userRepository, JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
-    // simple refresh token store (in-memory). Replace with DB for production.
-    private final ConcurrentHashMap<String, String> refreshStore = new ConcurrentHashMap<>();
+    public AuthResponse register(UserRegisterDto dto) {
 
+        User user = new User();
+        user.setId(UUID.randomUUID());
+        user.setMail(dto.getMail());
+        user.setName(dto.getName());
+        user.setPassword(encoder.encode(dto.getPassword()));
 
-    public AuthService(UserRepository userRepo, JwtUtil jwtUtil){ this.userRepo = userRepo; this.jwtUtil = jwtUtil; }
+        userRepository.save(user);
 
+        String token = jwtUtil.generateToken(user.getId().toString());
 
-public AuthRegisterResponse register(UserRegisterDto reg) {
-    var u = new User();
-    u.setName(reg.getName());
-    u.setMail(reg.getMail());
-    u.setPassword(encoder.encode(reg.getPassword()));
-    u.setCigInitial(reg.getCigInitial());
-    u.setCigPrice(reg.getCigPrice());
-    u = userRepo.save(u);
+        return new AuthResponse(token, user.getId().toString());
+    }
 
-    String access = jwtUtil.generateAccessToken(u.getId().toString());
-    String refresh = jwtUtil.generateRefreshToken(u.getId().toString());
-    refreshStore.put(refresh, u.getId().toString());
+    public AuthResponse login(UserLoginDto dto) {
 
-    return new AuthRegisterResponse(u, access, refresh);
+        Optional<User> optional = userRepository.findByMail(dto.getMail());
+
+        if (optional.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        User user = optional.get();
+
+        if (!encoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        String token = jwtUtil.generateToken(user.getId().toString());
+
+        return new AuthResponse(token, user.getId().toString());
+    }
 }
-
-
-
-
-
-    public AuthResponse login(LoginRequest req) {
-    var user = userRepo.findByMail(req.getMail()).orElseThrow(() -> new RuntimeException("Invalid credentials"));
-    if (!encoder.matches(req.getPassword(), user.getPassword())) throw new RuntimeException("Invalid credentials");
-    String access = jwtUtil.generateAccessToken(user.getId().toString());
-    String refresh = jwtUtil.generateRefreshToken(user.getId().toString());
-    refreshStore.put(refresh, user.getId().toString());
-    return new AuthResponse(access, refresh);
-    }
-
-
-    public AuthResponse refresh(String refreshToken) {
-    if (!jwtUtil.validate(refreshToken)) throw new RuntimeException("Invalid refresh token");
-    String userId = jwtUtil.getUserIdFromToken(refreshToken);
-    // optional: check the refresh exists
-    if (!refreshStore.containsKey(refreshToken)) throw new RuntimeException("Refresh token revoked");
-    String newAccess = jwtUtil.generateAccessToken(userId);
-    String newRefresh = jwtUtil.generateRefreshToken(userId);
-    refreshStore.remove(refreshToken);
-    refreshStore.put(newRefresh, userId);
-    return new AuthResponse(newAccess, newRefresh);
-    }
-
-
-    public void logout(String refreshToken) { refreshStore.remove(refreshToken); }
-    }

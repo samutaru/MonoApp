@@ -1,10 +1,13 @@
 package com.MonoApp.MonoApp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.MonoApp.MonoApp.model.User;
 import com.MonoApp.MonoApp.repository.UserRepository;
 import java.sql.Date;
@@ -14,7 +17,7 @@ import java.util.UUID;
 public class UserService implements UserDetailsService { // ← Implementar la interfaz
     
     @Autowired
-    private UserRepository userRepo;
+    public UserRepository userRepo;
     
     // Tus métodos existentes
     public User createUser(User user) {
@@ -47,14 +50,16 @@ public class UserService implements UserDetailsService { // ← Implementar la i
         user.setCigInitial(cigInitial);
         return userRepo.save(user);
     }
-    
-    public User updateCigInitialByName(String name, Integer cigInitial) {
-        User user = userRepo.findByName(name)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        user.setCigInitial(cigInitial);
-        return userRepo.save(user);
-    }
+
+    public User updateCigInitialById(UUID id, Integer cigInitial) {
+    User user = userRepo.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "User not found"
+            ));
+
+    user.setCigInitial(cigInitial);
+    return userRepo.save(user);
+}
 
 
 }

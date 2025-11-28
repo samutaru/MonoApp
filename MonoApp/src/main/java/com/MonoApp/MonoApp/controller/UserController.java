@@ -44,11 +44,13 @@ public ResponseEntity<User> getMe(Authentication authentication) {
             @Valid @RequestBody UpdateCigInitialRequest request,
             Authentication authentication) {
         
-        // Obtener el name del usuario autenticado desde el token JWT
+        // Obtener el id del usuario autenticado desde el token JWT
         String userName = authentication.getName();
-        
+        UUID userId= userService.userRepo.findByName(userName)
+                .orElseThrow(() -> new RuntimeException("User not found"))
+                .getId();
         // Actualizar cigInitial
-        User updatedUser = userService.updateCigInitialByName(userName, request.getCigInitial());
+        User updatedUser = userService.updateCigInitialById(userId, request.getCigInitial());
         
         return ResponseEntity.ok(updatedUser);
     }

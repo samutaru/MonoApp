@@ -61,7 +61,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // ⭐ CORS CORRECTO PARA VITE
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of(
+    "http://localhost:5173", // todavía útil para desarrollo
+    "https://mono-app-inpage.vercel.app" // producción
+));
 
         config.setAllowCredentials(true);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

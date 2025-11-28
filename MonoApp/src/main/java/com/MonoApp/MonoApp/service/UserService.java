@@ -29,9 +29,9 @@ public class UserService implements UserDetailsService { // ← Implementar la i
     
     // ⭐ NUEVO: Método requerido por UserDetailsService
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = userRepo.findByName(name)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + name));
         
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getName())

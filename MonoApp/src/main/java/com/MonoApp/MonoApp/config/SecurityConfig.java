@@ -3,6 +3,7 @@ package com.MonoApp.MonoApp.config;
 import com.MonoApp.MonoApp.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,15 +26,15 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     private final JwtAuthFilter jwtAuthFilter;
-    private final UserDetailsService userDetailsService; // Necesitas inyectar esto
-    
+    private final UserDetailsService userDetailsService;
+
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.userDetailsService = userDetailsService;
     }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -41,48 +42,42 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error").permitAll() // ⭐ CRÍTICO: Permitir /error
+                        // ⭐ Importante para CORS preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/savings/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll() // Temporal para testing
+                        .requestMatchers("/api/savings/**").permitAll() // público de momento
+                        .requestMatchers("/api/users/**").permitAll()   // público temporal
                         .anyRequest().authenticated()
                 )
-                .authenticationProvider(authenticationProvider()) // ⭐ Agregar provider
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Para desarrollo - permite orígenes específicos
-        configuration.setAllowedOriginPatterns(List.of("*")); // ⭐ Usar patterns en lugar de origins
-        
-        // Para producción, especifica dominios exactos:
-        // configuration.setAllowedOrigins(Arrays.asList(
-        //     "http://localhost:3000",
-        //     "http://localhost:5173",
-        //     "https://tu-frontend.vercel.app"
-        // ));
-        
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type")); // ⭐ Agregar Content-Type
-        configuration.setAllowCredentials(true); // ⭐ Cambiar a true para que funcione con Authorization
-        configuration.setMaxAge(3600L);
-        
+        CorsConfiguration config = new CorsConfiguration();
+
+        // ⭐ CORS CORRECTO PARA VITE
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        config.setAllowCredentials(true);
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("Authorization")); 
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -90,7 +85,7 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
-    
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

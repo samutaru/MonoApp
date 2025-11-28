@@ -39,4 +39,22 @@ public class UserService implements UserDetailsService { // ← Implementar la i
                 .authorities("ROLE_USER") // Ajusta según tus roles
                 .build();
     }
+
+        public User updateCigInitial(UUID userId, Integer cigInitial) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        user.setCigInitial(cigInitial);
+        return userRepo.save(user);
+    }
+    
+    public User updateCigInitialByName(String name, Integer cigInitial) {
+        User user = userRepo.findByName(name)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        user.setCigInitial(cigInitial);
+        return userRepo.save(user);
+    }
+
+
 }

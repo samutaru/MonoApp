@@ -19,6 +19,7 @@ public class Saving {
     private Integer cigsSmoked; // cigarrillos fumados ese día
     private Double savedMoney;
     private Integer daysWithoutSmoking;
+    @Column(nullable = false)
     private LocalDate date; // fecha del registro diario
 
     public Saving() {}

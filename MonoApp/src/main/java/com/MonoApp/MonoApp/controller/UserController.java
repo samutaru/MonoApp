@@ -1,7 +1,10 @@
 package com.MonoApp.MonoApp.controller;
 
+import com.MonoApp.MonoApp.dto.UpdateCigInitialRequest;
 import com.MonoApp.MonoApp.model.User;
 import com.MonoApp.MonoApp.service.UserService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,19 @@ public ResponseEntity<User> getMe(Authentication authentication) {
     return ResponseEntity.ok(user);
 }
 
+ @PatchMapping("/cig-initial")
+    public ResponseEntity<User> updateCigInitial(
+            @Valid @RequestBody UpdateCigInitialRequest request,
+            Authentication authentication) {
+        
+        // Obtener el name del usuario autenticado desde el token JWT
+        String userName = authentication.getName();
+        
+        // Actualizar cigInitial
+        User updatedUser = userService.updateCigInitialByName(userName, request.getCigInitial());
+        
+        return ResponseEntity.ok(updatedUser);
+    }
 
 
 }

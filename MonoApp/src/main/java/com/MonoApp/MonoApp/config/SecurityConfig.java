@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/error").permitAll() // ⭐ CRÍTICO: Permitir /error
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/saving/**").permitAll() // Temporal para testing
+                        .requestMatchers("/api/savings/**").permitAll() // Temporal para testing
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider()) // ⭐ Agregar provider

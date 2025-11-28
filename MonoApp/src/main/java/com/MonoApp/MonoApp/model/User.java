@@ -4,6 +4,8 @@ package com.MonoApp.MonoApp.model;
 import jakarta.persistence.*;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "users")
@@ -34,7 +36,9 @@ private Boolean mascotStatus = true;
 
 
 @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+@JsonIgnore // MUY IMPORTANTE — evita bucles infinitos
 private List<Saving> savings = new ArrayList<>();
+
 
 
 public UUID getId() {

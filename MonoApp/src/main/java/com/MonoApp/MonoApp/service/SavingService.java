@@ -1,43 +1,63 @@
 package com.MonoApp.MonoApp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.MonoApp.MonoApp.model.Saving;
 import com.MonoApp.MonoApp.model.User;
 import com.MonoApp.MonoApp.repository.SavingRepository;
 import com.MonoApp.MonoApp.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class SavingService {
 
-    @Autowired
-    private SavingRepository savingRepo;
+    private final SavingRepository savingRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepo;
+    public SavingService(SavingRepository savingRepository, UserRepository userRepository) {
+        this.savingRepository = savingRepository;
+        this.userRepository = userRepository;
+    }
 
-    public Saving registerSaving(UUID userId, Double savedMoney, Integer daysWithoutSmoking) {
-    User user = userRepo.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public Saving registerDailySaving(UUID userId, Integer cigsSmoked) {
 
-    Saving saving = new Saving();
-    saving.setUser(user);
-    saving.setSavedMoney(savedMoney);
-    saving.setDaysWithoutSmoking(daysWithoutSmoking);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    return savingRepo.save(saving);
-}
+        LocalDate today = LocalDate.now();
 
+        // ¿Ya hay registro hoy?
+        Saving existing = savingRepository.findByUserIdAndDate(userId, today).orElse(null);
 
-    public Double getTotalSavings(UUID userId) {
-        return savingRepo.getTotalSavings(userId);
+        if (existing != null) {
+            existing.setCigsSmoked(cigsSmoked);
+            return savingRepository.save(existing);
+        }
+
+        // Crear un nuevo registro diario
+        Saving newSaving = new Saving(user, cigsSmoked, today);
+        return savingRepository.save(newSaving);
     }
 
     public List<Saving> getHistory(UUID userId) {
-        return savingRepo.findByUserId(userId);
+        return savingRepository.findAllByUserId(userId);
+    }
+
+    public double calculateMoneySaved(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+
+        int dailyInitial = user.getCigInitial();
+        double pricePerPack = user.getCigPrice() / 20.0;
+
+        List<Saving> records = savingRepository.findAllByUserId(userId);
+
+        int totalAvoided = records.stream()
+                .mapToInt(s -> dailyInitial - s.getCigsSmoked())
+                .filter(x -> x > 0)
+                .sum();
+
+        return totalAvoided * pricePerPack;
     }
 }

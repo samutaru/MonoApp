@@ -1,7 +1,7 @@
 package com.MonoApp.MonoApp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -14,50 +14,45 @@ public class Saving {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore  // 👈 evita el bucle infinito
     private User user;
 
+    private Integer cigsSmoked; // cigarrillos fumados ese día
     private Double savedMoney;
     private Integer daysWithoutSmoking;
-
-    public Saving(UUID id, User user, Double savedMoney, Integer daysWithoutSmoking) {
-        this.id = id;
-        this.user = user;
-        this.savedMoney = savedMoney;
-        this.daysWithoutSmoking = daysWithoutSmoking;
-    }
+    private LocalDate date; // fecha del registro diario
 
     public Saving() {}
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
+    public Saving(User user, Integer cigsSmoked, LocalDate date,double savedMoney, Integer daysWithoutSmoking) {
         this.user = user;
-    }
-
-    public Double getSavedMoney() {
-        return savedMoney;
-    }
-
-    public void setSavedMoney(Double savedMoney) {
+        this.cigsSmoked = cigsSmoked;
+        this.date = date;
         this.savedMoney = savedMoney;
-    }
-
-    public Integer getDaysWithoutSmoking() {
-        return daysWithoutSmoking;
-    }
-
-    public void setDaysWithoutSmoking(Integer daysWithoutSmoking) {
         this.daysWithoutSmoking = daysWithoutSmoking;
     }
+       public Saving(User user, Integer cigsSmoked, LocalDate date) {
+        this.user = user;
+        this.cigsSmoked = cigsSmoked;
+        this.date = date;
+        // opcional: calcular savedMoney inicial aquí si tienes precio y baseline en user
+        if (user != null && user.getCigInitial() != null && user.getCigPrice() != null) {
+            int avoided = Math.max(0, user.getCigInitial() - cigsSmoked);
+            this.savedMoney = (double) (avoided * user.getCigPrice());
+        } else {
+            this.savedMoney = 0.0;
+        }
+    }
+    public UUID getId() { return id; }
+    public User getUser() { return user; }
+    public Integer getCigsSmoked() { return cigsSmoked; }
+    public LocalDate getDate() { return date; }
+    public Double getSavedMoney() { return savedMoney; }
+    public Integer getDaysWithoutSmoking() { return daysWithoutSmoking; }
+
+    public void setId(UUID id) { this.id = id; }
+    public void setUser(User user) { this.user = user; }
+    public void setCigsSmoked(Integer cigsSmoked) { this.cigsSmoked = cigsSmoked; }
+    public void setDate(LocalDate date) { this.date = date; }
+    public void setSavedMoney(Double savedMoney) { this.savedMoney = savedMoney; }
+    public void setDaysWithoutSmoking(Integer daysWithoutSmoking) { this.daysWithoutSmoking = daysWithoutSmoking; }
 }

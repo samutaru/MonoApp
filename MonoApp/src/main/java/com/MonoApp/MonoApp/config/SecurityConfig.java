@@ -4,9 +4,15 @@ import com.MonoApp.MonoApp.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -21,37 +27,38 @@ import java.util.List;
 public class SecurityConfig {
     
     private final JwtAuthFilter jwtAuthFilter;
-
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+    private final UserDetailsService userDetailsService; // Necesitas inyectar esto
+    
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, UserDetailsService userDetailsService) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.userDetailsService = userDetailsService;
     }
-
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS habilitado
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-    .requestMatchers("/api/auth/**").permitAll()
-    .requestMatchers("/api/saving/**").permitAll() // <--- añadir esto temporalmente
-    .anyRequest().authenticated()
-
-
-)
-
+                        .requestMatchers("/error").permitAll() // ⭐ CRÍTICO: Permitir /error
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/saving/**").permitAll() // Temporal para testing
+                        .anyRequest().authenticated()
+                )
+                .authenticationProvider(authenticationProvider()) // ⭐ Agregar provider
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
+    
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        // Permitir todos los orígenes (para desarrollo)
-        configuration.setAllowedOrigins(List.of("*"));
+        // Para desarrollo - permite orígenes específicos
+        configuration.setAllowedOriginPatterns(List.of("*")); // ⭐ Usar patterns en lugar de origins
         
-        // Para producción, especifica tus dominios:
+        // Para producción, especifica dominios exactos:
         // configuration.setAllowedOrigins(Arrays.asList(
         //     "http://localhost:3000",
         //     "http://localhost:5173",
@@ -60,20 +67,31 @@ public class SecurityConfig {
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type")); // ⭐ Agregar Content-Type
+        configuration.setAllowCredentials(true); // ⭐ Cambiar a true para que funcione con Authorization
         configuration.setMaxAge(3600L);
-        
-        // Si usas allowedOrigins("*"), NO puedes usar allowCredentials(true)
-        configuration.setAllowCredentials(false);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         
         return source;
     }
-
+    
     @Bean
-    public AuthenticationManager authenticationManager() {
-        return authentication -> authentication;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

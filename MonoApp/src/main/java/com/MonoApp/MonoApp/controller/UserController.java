@@ -39,21 +39,25 @@ public ResponseEntity<User> getMe(Authentication authentication) {
     return ResponseEntity.ok(user);
 }
 
- @PatchMapping("/cig-initial")
-    public ResponseEntity<User> updateCigInitial(
-            @Valid @RequestBody UpdateCigInitialRequest request,
-            Authentication authentication) {
-        
-        // Obtener el id del usuario autenticado desde el token JWT
-        String userName = authentication.getName();
-        UUID userId= userService.userRepo.findByName(userName)
-                .orElseThrow(() -> new RuntimeException("User not found"))
-                .getId();
-        // Actualizar cigInitial
-        User updatedUser = userService.updateCigInitialById(userId, request.getCigInitial());
-        
-        return ResponseEntity.ok(updatedUser);
+@PatchMapping("/cig-initial")
+public ResponseEntity<User> updateCigInitial(
+        @Valid @RequestBody UpdateCigInitialRequest request,
+        Authentication authentication) {
+
+    if (authentication == null) {
+        return ResponseEntity.status(401).build();
     }
+
+    // Obtenemos directamente el userId del JWT
+    String userIdString = authentication.getName();
+    UUID userId = UUID.fromString(userIdString);
+
+    // Actualizamos cigInitial
+    User updatedUser = userService.updateCigInitialById(userId, request.getCigInitial());
+
+    return ResponseEntity.ok(updatedUser);
+}
+
 
 
 }

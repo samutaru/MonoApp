@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // ⭐ Importante para CORS preflight
+                        // Permitir OPTIONS para preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers("/error").permitAll()
@@ -60,16 +60,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ⭐ CORS CORRECTO PARA VITE
+        // Permitir localhost para desarrollo y Vercel para producción
         config.setAllowedOrigins(List.of(
-    "http://localhost:5173", // todavía útil para desarrollo
-    "https://mono-app-inpage.vercel.app" // producción
-));
-
+                "http://localhost:5173",
+                "https://mono-app-inpage.vercel.app",
+                "https://mono-app-frontend-khp6.vercel.app/"
+        ));
         config.setAllowCredentials(true);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("Authorization")); 
+        config.setExposedHeaders(List.of("Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

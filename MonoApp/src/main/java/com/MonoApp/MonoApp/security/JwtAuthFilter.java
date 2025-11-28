@@ -5,12 +5,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -38,21 +39,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = authHeader.substring(7);
 
         try {
-            String userId = jwtUtil.extractUserId(token); // ← STRING
-
             if (jwtUtil.isTokenValid(token)) {
+                // Extraemos directamente el userId desde el JWT
+                String userId = jwtUtil.extractUserId(token);
 
+                // Creamos Authentication con principal = userId y sin authorities por ahora
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                userId,  // ← PASA STRING COMO PRINCIPAL
+                                userId,
                                 null,
-                                null
+                                Collections.emptyList() // Sin roles de momento
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            e.printStackTrace(); // Para debug, logea el error
+        }
 
         filterChain.doFilter(request, response);
     }

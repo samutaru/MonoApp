@@ -46,18 +46,27 @@ public class SavingService {
     }
 
     public double calculateMoneySaved(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+// Obtener el usuario
+User user = userRepository.findById(userId)
+.orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        int dailyInitial = user.getCigInitial();
-        double pricePerPack = user.getCigPrice() / 20.0;
+int dailyInitial = user.getCigInitial();
+double pricePerCig = user.getCigPrice() / 20.0;
 
-        List<Saving> records = savingRepository.findAllByUser_Id(userId);
+// Obtener los registros de ahorro del usuario
+List<Saving> records = savingRepository.findAllByUser_Id(userId);
 
-        int totalAvoided = records.stream()
-                .mapToInt(s -> dailyInitial - s.getCigsSmoked())
-                .filter(x -> x > 0)
-                .sum();
+// Calcular el total de cigarrillos evitados, ignorando registros nulos
+int totalAvoided = records.stream()
+        .filter(s -> s.getCigsSmoked() != null) // Ignorar registros sin valor
+        .mapToInt(s -> dailyInitial - s.getCigsSmoked())
+        .filter(avoided -> avoided > 0)
+        .sum();
 
-        return totalAvoided * pricePerPack;
-    }
+// Retornar el dinero ahorrado
+return totalAvoided * pricePerCig;
+
+
+}
+
 }

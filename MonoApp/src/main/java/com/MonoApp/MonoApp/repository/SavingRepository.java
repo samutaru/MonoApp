@@ -13,7 +13,8 @@ import java.util.UUID;
 public interface SavingRepository extends JpaRepository<Saving, UUID> {
     @Query("SELECT COALESCE(SUM(s.savedMoney),0) FROM Saving s WHERE s.user.id = :userId")
     Double getTotalSavings(@Param("userId") UUID userId);
-    List<Saving> findAllByUserId(UUID userId);
-    Optional<Saving> findByUserIdAndDate(UUID userId, LocalDate date);
-    List<Saving> findByUserId(UUID userId);
+
+    List<Saving> findAllByUser_Id(UUID userId);
+    Optional<Saving> findByUser_IdAndDate(UUID userId, LocalDate date);
+    List<Saving> findByUser_Id(UUID userId);
 }

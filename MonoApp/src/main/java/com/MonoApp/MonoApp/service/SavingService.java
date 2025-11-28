@@ -29,7 +29,7 @@ public class SavingService {
         LocalDate today = LocalDate.now();
 
         // ¿Ya hay registro hoy?
-        Saving existing = savingRepository.findByUserIdAndDate(userId, today).orElse(null);
+        Saving existing = savingRepository.findByUser_IdAndDate(userId, today).orElse(null);
 
         if (existing != null) {
             existing.setCigsSmoked(cigsSmoked);
@@ -42,7 +42,7 @@ public class SavingService {
     }
 
     public List<Saving> getHistory(UUID userId) {
-        return savingRepository.findAllByUserId(userId);
+        return savingRepository.findAllByUser_Id(userId);
     }
 
     public double calculateMoneySaved(UUID userId) {
@@ -51,7 +51,7 @@ public class SavingService {
         int dailyInitial = user.getCigInitial();
         double pricePerPack = user.getCigPrice() / 20.0;
 
-        List<Saving> records = savingRepository.findAllByUserId(userId);
+        List<Saving> records = savingRepository.findAllByUser_Id(userId);
 
         int totalAvoided = records.stream()
                 .mapToInt(s -> dailyInitial - s.getCigsSmoked())

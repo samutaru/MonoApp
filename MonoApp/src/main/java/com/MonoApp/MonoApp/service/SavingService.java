@@ -68,5 +68,20 @@ return totalAvoided * pricePerCig;
 
 
 }
+public Saving saveDailyMoney(UUID userId, double moneySavedToday) {
+
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    LocalDate today = LocalDate.now();
+
+    Saving todaySaving = savingRepository.findByUser_IdAndDate(userId, today)
+            .orElse(new Saving(user, 0, today));
+
+    todaySaving.setSavedMoney(moneySavedToday);
+
+    return savingRepository.save(todaySaving);
+}
+
 
 }

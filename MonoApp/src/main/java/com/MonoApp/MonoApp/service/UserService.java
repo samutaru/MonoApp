@@ -18,7 +18,11 @@ public class UserService implements UserDetailsService { // ← Implementar la i
     
     @Autowired
     public UserRepository userRepo;
-    
+    private final SavingService savingService;
+    public UserService(UserRepository userRepo, SavingService savingService) {
+    this.userRepo = userRepo;
+    this.savingService = savingService;
+}
     // Tus métodos existentes
     public User createUser(User user) {
         user.setRegisterDate(new Date(System.currentTimeMillis()));
@@ -88,7 +92,11 @@ public void finishDay(UUID userId) {
     user.setCigsSmokedToday(0);
 
     userRepo.save(user);
+
+    // 🔥 guardar el ahorro diario en Saving
+    savingService.saveDailyMoney(userId, moneySavedToday);
 }
+
 
 
 

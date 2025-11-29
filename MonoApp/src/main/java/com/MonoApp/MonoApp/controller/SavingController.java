@@ -38,4 +38,5 @@ public class SavingController {
     public ResponseEntity<Double> getMoneySaved(@PathVariable UUID userId) {
         return ResponseEntity.ok(savingService.calculateMoneySaved(userId));
     }
+    
 }

@@ -60,6 +60,36 @@ public class UserService implements UserDetailsService { // ← Implementar la i
     user.setCigInitial(cigInitial);
     return userRepo.save(user);
 }
+public User addDailyCig(UUID userId) {
+
+    User user = userRepo.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    user.setCigsSmokedToday(user.getCigsSmokedToday() + 1);
+
+    return userRepo.save(user);
+}
+public void finishDay(UUID userId) {
+
+    User user = userRepo.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    int cigsBefore = user.getCigInitial();
+    int cigsNow = user.getCigsSmokedToday();
+
+    int cigsAvoided = Math.max(cigsBefore - cigsNow, 0);
+
+    double moneySavedToday = cigsAvoided * user.getCigPrice();
+
+    // sumar al total
+    user.setTotalMoneySaved(user.getTotalMoneySaved() + moneySavedToday);
+
+    // reiniciar contador diario
+    user.setCigsSmokedToday(0);
+
+    userRepo.save(user);
+}
+
 
 
 }

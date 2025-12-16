@@ -113,7 +113,7 @@ monoApp is designed for:
 git clone https://github.com/your-username/monoApp.git
 cd monoApp
 ```
-##🤝 Contributing
+## 🤝 Contributing
 
 Contributions are welcome!
 
@@ -127,7 +127,7 @@ Open a Pull Request
 
 Please follow existing code style and best practices.
 
-##👨‍💻 Authors
+## 👨‍💻 Authors
 
 Alejandro Rondan Garcia
 

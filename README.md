@@ -112,3 +112,27 @@ monoApp is designed for:
 # Clone the repository
 git clone https://github.com/your-username/monoApp.git
 cd monoApp
+
+🤝 Contributing
+
+Contributions are welcome!
+
+Fork the repository
+
+Create a feature branch
+
+Commit your changes
+
+Open a Pull Request
+
+Please follow existing code style and best practices.
+
+👨‍💻 Authors
+
+Alejandro Rondan Garcia
+
+Samuel Tamayo Ruiz
+
+Tomás Cotelo Álvarez
+
+Taima Altalafha

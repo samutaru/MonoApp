@@ -1,0 +1,22 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fondo Marlboro */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: white;
+  background-size: cover;
+}
+
+/* Para que tu app no tape el fondo */
+#root {
+  min-height: 100vh;
+}

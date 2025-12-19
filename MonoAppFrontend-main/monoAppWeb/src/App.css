@@ -1,0 +1,815 @@
+/* =====================================================
+   ===============   MOBILE FRAME LAYOUT    =============
+   ===================================================== */
+
+   .app-root {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ===== MARCO DEL MÓVIL (solo escritorio) ===== */
+  .phone-frame {
+    width: 390px;
+    height: 795px;
+    border-radius: 32px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    background: transparent;
+  }
+  
+  /* ===== Fondo Marlboro por defecto ===== */
+  .phone-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/marlboro-bg.png") no-repeat top center;
+    background-size: cover;
+    z-index: 0;
+  }
+  
+  /* ===== Fondo dark-Marlboro en modo oscuro ===== */
+  .dark-theme .phone-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #374151;
+    /*background: url("/dark-marlboro.png") no-repeat top center;*/
+    background-size: cover;
+    z-index: 0;
+  }
+  
+  /* contenido encima del fondo */
+  .app-container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  
+  
+  /* =====================================================
+     ===================   HEADER TOP   ===================
+     ===================================================== */
+  
+  .top-header {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content; 
+    text-align: center;
+    z-index: 10;
+  }
+
+  /* Texto de arriba (fuera de la caja) */
+  .top-header-welcome {
+    font-size: 1rem;
+    color: white;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0 0 6px 0;
+    text-align: center;
+  }
+  
+  .top-header-box {
+    background: white;
+    padding: 6px 14px;
+    border-radius: 35px;
+  }
+  
+  /* Texto rojo dentro de la caja */
+  .top-header-text {
+    font-size: 0.9rem;
+    color: #991b1b; /* Rojo estilo Marlboro */
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .settings-open .top-header-text {
+    color: rgba(255, 255, 255, 0.25); /* blanco muy suave */
+    text-shadow: none;
+  }
+  
+  
+  /* =====================================================
+     ===================   MAIN SCREEN   ==================
+     ===================================================== */
+  
+  .screen {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 80px;
+    padding-bottom: 200px; /* espacio para contador + barra */
+  }
+  
+  
+  /* =====================================================
+     ===================  MONKEY IMAGE   ==================
+     ===================================================== */
+  
+  .image-wrapper {
+    width: 300px;
+    height: 300px;
+    background: #d4d4d4;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .monkey-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  
+  /* =====================================================
+     ==================   COUNTER CARD    =================
+     ===================================================== */
+  
+  .counter-card {
+      position: absolute;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      
+      background-color: white;      /* interior blanco */
+      padding: 1.5rem 2rem;
+      width: 260px;
+      text-align: center;
+    
+      border: 4px solid #000000;    /* borde negro */
+      color: #000000;               /* texto negro */
+    
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark-theme .counter-card {
+    background-color: rgba(15, 23, 42, 0.92);
+    color: white;
+  }
+  
+  
+  /* =====================================================
+     ==================   PROGRESS BAR   ==================
+     ===================================================== */
+  
+  .counter-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #374151;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: #2db860; /* verde base */
+    transition: width 0.25s ease, background-color 0.2s ease;
+    transform-origin: center;
+  }
+  
+  .progress-bump {
+    animation: bump 0.2s ease-out;
+  }
+  
+  @keyframes bump {
+    0% { transform: scaleY(1); }
+    50% { transform: scaleY(1.4); }
+    100% { transform: scaleY(1); }
+  }
+  
+  .over-limit-fill {
+    background-color: #ef4444;
+  }
+  
+  .over-limit-pulse {
+    animation: pulseRed 0.25s ease-out;
+  }
+  
+  @keyframes pulseRed {
+    0% { background-color: #991b1b; }
+    100% { background-color: #c52e2e; }
+  }
+  
+  .counter-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .over-limit-text {
+    color: #ef4444;
+  }
+  
+  
+  /* =====================================================
+     ================== COUNTER BUTTONS  ==================
+     ===================================================== */
+  
+  .button-row {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  
+  .counter-button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: #f9fafb;
+    font-weight: 600;
+    color: #111827;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  
+  .remove-button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: #ef4444;
+    color: white;
+    font-weight: 700;
+  }
+  
+  
+  /* =====================================================
+     ==================   BOTTOM NAV    ===================
+     ===================================================== */
+  
+  .bottom-nav {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    height: 60px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    z-index: 3;
+  }
+  
+  .dark-theme .bottom-nav {
+    background: rgba(15, 23, 42, 0.95);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+  
+  .nav-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.4rem;
+    opacity: 0.5;
+  }
+  
+  .nav-active {
+    opacity: 1 !important;
+  }
+  
+  .nav-button-center {
+    font-size: 1.7rem;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: white;
+    padding: 0.6rem;
+    border-radius: 50%;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.6);
+  }
+  
+  .dark-theme .nav-button-center {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    box-shadow: 0 12px 30px rgba(234, 88, 12, 0.7);
+  }
+  
+  .nav-center-active {
+    filter: brightness(1.2);
+  }
+  
+  
+  /* =====================================================
+     ==================   SETTINGS MODAL   ================
+     ===================================================== */
+  
+  .settings-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  
+  .settings-modal {
+    background: #991b1b;
+    padding: 1.5rem 2rem;
+    border-radius: 20px;
+    width: 300px;
+    color: white;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  .settings-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .settings-section {
+    margin-bottom: 1rem;
+  }
+  
+  .settings-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  
+  .settings-input {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background: white;
+    color: black;
+    margin-top: 0.5rem;
+  }
+  
+  .settings-value {
+    font-size: 0.95rem;
+  }
+  
+  .settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.7rem;
+    margin-top: 0.5rem;
+  }
+  
+  .settings-primary-button,
+  .settings-secondary-button {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  
+  .settings-primary-button {
+    background: white;
+    color: #022c22;
+  }
+  
+  .settings-secondary-button {
+    background: #022c22;
+    color: white;
+  }
+  
+  /* === Toggle switch ===== */
+  
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .toggle input {
+    display: none;
+  }
+  
+  .toggle-slider {
+    width: 42px;
+    height: 24px;
+    border-radius: 999px;
+    background: #4b5563;
+    position: relative;
+    transition: background 0.2s;
+  }
+  
+  .toggle-slider::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #f9fafb;
+    transition: transform 0.2s;
+  }
+  
+  .toggle input:checked + .toggle-slider {
+    background: #22c55e;
+  }
+  
+  .toggle input:checked + .toggle-slider::before {
+    transform: translateX(18px);
+  }
+
+  .settings-progress-line {
+    font-size: 0.9rem;
+    margin: 0.15rem 0;
+  }
+  
+  .settings-progress-line span {
+    font-weight: 600;
+    color: #22c55e; /* verde motivador */
+  }
+  
+  
+  /* =====================================================
+     ================    RESPONSIVE MODE   ================
+     ===================================================== */
+  
+  @media (max-width: 640px) {
+    .app-root {
+      display: block;
+    }
+  
+    .phone-frame {
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  
+    .phone-frame::before {
+      display: block; /* Sin fondo dentro del marco en móvil */
+    }
+  
+    .screen {
+      padding-bottom: 200px;
+    }
+  }
+
+  /* ===== HOME BUTTON (PANTALLA HOME) ===== */
+
+.home-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.home-button {
+  position: relative;
+  width: 230px;
+  height: 56px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+
+  background-color: #111827;
+  color: #e5e7eb;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-button:disabled {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.home-button-label {
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+}
+
+/* “Barra” que va subiendo dentro del botón */
+.home-button-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to top, #22c55e, #4ade80);
+  z-index: 0;
+  transition: height 5s linear;
+}
+
+/* Cuando está corriendo la animación, la barra sube hasta arriba */
+.home-button-running .home-button-fill {
+  height: 100%;
+}
+
+
+/* ----- TEXTO DE ARRIBA DEL BOTON -----*/
+.dont-smoke {
+  font-weight: 500;
+}
+
+.dark-theme .dont-smoke  {
+  color: white;
+}
+
+
+.home-congrats {
+  font-size: 0.95rem;
+  color: #f9fafb;
+  text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+/* ===== HOME BUTTON (PANTALLA HOME) ===== */
+
+.home-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  margin-top: -80px;
+}
+
+.home-button {
+  position: relative;
+  width: 230px;
+  height: 56px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+
+  background-color: black;
+  color: #e5e7eb;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-button:disabled {
+  cursor: default;
+  opacity: 0.9;
+}
+
+.home-button-label {
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+}
+
+/* “Barra” que sube y baja dentro del botón */
+.home-button-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(to top, white, white);
+  z-index: 0;
+  transition: height 5s linear;
+}
+
+/* Fase inhale: la barra sube */
+.home-button-inhale .home-button-fill {
+  height: 100%;
+}
+
+/* Fase exhale: la barra baja */
+.home-button-exhale .home-button-fill {
+  height: 0%;
+}
+
+/* Texto Inhale / Exhale debajo, en negro */
+.home-breath-label {
+  font-size: 0.95rem;
+  color: #000000;
+  font-weight: 500;
+}
+
+.dark-theme .home-breath-label {
+  color: white;
+}
+
+
+/* ===== POPUP RESPIRO ===== */
+
+.breath-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 8;
+}
+
+.breath-modal {
+  background: #991b1b;
+  padding: 1.25rem 1.75rem;
+  border-radius: 18px;
+  width: 260px;
+  color: #f9fafb;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.breath-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.breath-text {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.breath-button {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: #22c55e;
+  color: #022c22;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.breath-subtext {
+  font-size: 0.85rem;
+  color: #e5e7eb;
+  margin-bottom: 0.9rem;
+}
+
+.breath-amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: #22c55e;
+}
+
+.breath-amount-currency {
+  font-size: 1.1rem;
+  margin-left: 2px;
+}
+
+.breath-button {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: #22c55e;
+  color: #022c22;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.breath-button + .breath-button {
+  margin-left: 0.5rem;
+}
+
+.breath-button-secondary {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+/* ===== CAJA DE FRASES MÉDICAS EN HOME ===== */
+
+.home-quote-box {
+  position: absolute;
+  bottom: 110px;              /* misma idea que el counter-card */
+  left: 50%;
+  transform: translateX(-50%);
+  
+  width: 300px;
+
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 0.9rem 1rem 0.8rem;
+  text-align: left;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.dark-theme .home-quote-box {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+}
+
+.home-quote-text {
+  font-size: 0.85rem;
+  color: #111827;
+  margin: 0 0 0.6rem 0;
+  text-align: center;
+}
+
+.dark-theme .home-quote-text {
+  color: #e5e7eb;
+}
+
+.home-quote-button {
+  display: block;
+  margin: 0.6rem auto 0 auto;   /*  centra el botón */
+  padding: 0.4rem 1rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.dark-theme .home-quote-button {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.mascot-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  display: block;
+  margin: 0.25rem auto 0;
+}
+.mascot-toggle {
+  cursor: pointer;
+  text-align: center;
+  margin-top: 12rem;  /* AJUSTA ESTE VALOR */
+}
+
+.mascot-text {
+  margin-top: 10.5rem;
+  font-weight: 650;
+}
+
+.mascot-text:hover {
+  color: #ef4444;           /* texto blanco */
+}
+
+/* ⭐ ANIMACIÓN DE REBOTE PARA LA MASCOTA ⭐ */
+.mascot-bounce {
+  animation: mascotBounce 0.6s ease-out forwards;
+}
+
+@keyframes mascotBounce {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.top-header-subtext {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.top-header-subtext:hover {
+  opacity: 0.85;
+}

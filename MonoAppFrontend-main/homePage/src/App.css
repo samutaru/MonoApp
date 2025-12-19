@@ -1,0 +1,229 @@
+/* ===== PAGE BACKGROUND ===== */
+.homepage {
+  background: linear-gradient(135deg, #c60000, #8b0000);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+/* ===== HEADER ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 40px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.btn-login,
+.btn-register,
+.btn-primary {
+  background-color: #ff6b6b;
+  color: #ffffff;
+}
+
+.btn-login:hover,
+.btn-register:hover,
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* ===== MAIN SECTION ===== */
+.main-content {
+  margin-top: 80px;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.quote-text {
+  font-size: 34px;
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+/* Fade animations */
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.subtitle {
+  font-size: 16px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ===== MODALS ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal {
+  background-color: #1f2933;
+  padding: 24px 24px 20px 24px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.modal h2 {
+  margin-bottom: 16px;
+  font-size: 22px;
+}
+
+.modal-close {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.modal-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  gap: 4px;
+}
+
+.modal-form input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #4b5563;
+  background-color: #111827;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.modal-form input:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  color: #9ca3af;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.link-button:hover {
+  color: #ffffff;
+}
+
+.switch-text {
+  margin-top: 8px;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .header {
+    padding: 12px 16px;
+  }
+
+  .quote-text {
+    font-size: 10px;
+  }
+
+  .modal {
+    margin: 0 16px;
+  }
+}
+
+/* Frases motivacionales */
+
+.quote-text {
+  margin-top: 200px;
+}
+
+/* Hover bonito para botones Login y Register */
+.btn-login,
+.btn-register {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-login:hover,
+.btn-register:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.error-text {
+  color: #ffb4b4;
+  font-size: 13px;
+  margin-top: -2px;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
